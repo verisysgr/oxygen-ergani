@@ -1,0 +1,7 @@
+/.fleet
+/.idea
+/.vscode
+/.env
+/vendor/
+.phpunit.result.cache
+/.phpunit.cache/test-results
