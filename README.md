@@ -1,0 +1,1 @@
+A comprehensive package for seamlessly interacting with Greece’s Ergani system, enabling automated submissions for employee data such as check-ins, check-outs, and other employment-related information. This repository aims to simplify and streamline workforce management and ensure compliance with Greek labor regulations.
