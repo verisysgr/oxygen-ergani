@@ -12,7 +12,7 @@ class AuthenticationRefreshTest extends TestCase
     public function test_authentication_logout(): void
     {
         $auth = new AuthenticationRefresh();
-        $auth->getConfig()->setHandler($this->mockResponse(200, 'authentication.php'));
+        $auth->getConfig()->setHandler($this->mockResponse(200, 'authentication.json'));
         $response = $auth->handle('old-test-access-token', 'old-test-refresh-token');
 
         $this->assertNotNull($response);

@@ -30,7 +30,7 @@ class WorkCardTest extends TestCase
             );
 
         $workCard = new WorkCard('test-access-token');
-        $workCard->getConfig()->setHandler($this->mockResponse(200, 'work-card.php'));
+        $workCard->getConfig()->setHandler($this->mockResponse(200, 'work-card.json'));
         $response = $workCard->handle($card);
 
         $this->assertIsArray($response);
@@ -39,7 +39,7 @@ class WorkCardTest extends TestCase
     public function test_work_card_schema(): void
     {
         $workCard = new WorkCard("test-access-token");
-        $workCard->getConfig()->setHandler($this->mockResponse(200, 'work-card-schema.php'));
+        $workCard->getConfig()->setHandler($this->mockResponse(200, 'work-card-schema.json'));
         $workCard->schema();
 
         $this->assertTrue($workCard->isSuccessful());

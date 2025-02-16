@@ -1,0 +1,6 @@
+{
+    "accessToken": "test-access-token",
+    "accessTokenExpired": "10800",
+    "refreshToken": "test-refresh-token",
+    "refreshTokenExpired": "2025-02-21T14:44:28.2731304+02:00"
+}

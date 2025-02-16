@@ -12,7 +12,7 @@ class ServicesListTest extends TestCase
     public function test_services_list(): void
     {
         $list = new ServicesList('test-access-token');
-        $list->getConfig()->setHandler($this->mockResponse(200, 'services-list.php'));
+        $list->getConfig()->setHandler($this->mockResponse(200, 'services-list.json'));
         $response = $list->handle();
 
         $this->assertIsArray($response);

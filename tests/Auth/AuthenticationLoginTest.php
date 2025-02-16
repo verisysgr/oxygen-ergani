@@ -12,7 +12,7 @@ class AuthenticationLoginTest extends TestCase
     public function test_authentication(): void
     {
         $auth = new AuthenticationLogin();
-        $auth->getConfig()->setHandler($this->mockResponse(200, 'authentication.php'));
+        $auth->getConfig()->setHandler($this->mockResponse(200, 'authentication.json'));
         $response = $auth->handle('username', 'password');
 
         $this->assertNotNull($response);

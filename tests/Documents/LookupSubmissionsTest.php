@@ -12,7 +12,7 @@ class LookupSubmissionsTest extends TestCase
     public function test_lookup_submissions(): void
     {
         $lookup = new LookupSubmissions('test-access-token');
-        $lookup->getConfig()->setHandler($this->mockResponse(200, 'lookup-submissions.php'));
+        $lookup->getConfig()->setHandler($this->mockResponse(200, 'lookup-submissions.json'));
         $response = $lookup->handle();
 
         $this->assertIsArray($response);
