@@ -68,7 +68,7 @@ class Model
         return match (true) {
             $value instanceof self => $sort ? $value->toSortedArray() : $value->toArray(),
             $value instanceof BackedEnum => $value->value,
-            is_array($value) => array_map(fn($item) => $this->processValue($item, $sort), $value),
+            is_array($value) => array_map(fn ($item) => $this->processValue($item, $sort), $value),
             default => $value
         };
     }
