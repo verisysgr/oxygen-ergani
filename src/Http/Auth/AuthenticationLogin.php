@@ -7,7 +7,7 @@ use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
 use OxygenSuite\OxygenErgani\Http\Client;
 use OxygenSuite\OxygenErgani\Responses\AuthenticationResponse;
 
-class Authentication extends Client
+class AuthenticationLogin extends Client
 {
     private const URI = 'Authentication';
 
@@ -29,6 +29,6 @@ class Authentication extends Client
             'Username' => $username,
             'Password' => $password,
             'Usertype' => $userType instanceof UserType ? $userType->value : $userType,
-        ])->morphToClass(AuthenticationResponse::class);
+        ])->morphTo(AuthenticationResponse::class);
     }
 }

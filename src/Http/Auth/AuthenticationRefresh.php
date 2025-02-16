@@ -25,6 +25,6 @@ class AuthenticationRefresh extends Client
         return $this->post(self::URI, [
             'AccessToken' => $accessToken,
             'RefreshToken' => $refreshToken,
-        ])->morphToClass(AuthenticationResponse::class);
+        ])->morphTo(AuthenticationResponse::class);
     }
 }

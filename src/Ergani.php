@@ -5,7 +5,7 @@ namespace OxygenSuite\OxygenErgani;
 use OxygenSuite\OxygenErgani\Enums\Environment;
 use OxygenSuite\OxygenErgani\Enums\UserType;
 use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
-use OxygenSuite\OxygenErgani\Http\Auth\Authentication;
+use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogin;
 use OxygenSuite\OxygenErgani\Http\ClientConfig;
 use OxygenSuite\OxygenErgani\Http\Documents\WorkCard;
 use OxygenSuite\OxygenErgani\Http\Services\ServicesList;
@@ -31,7 +31,7 @@ class Ergani
      */
     public function authenticate(string $username, string $password, UserType $userType = UserType::EXTERNAL): AuthenticationResponse
     {
-        $auth = new Authentication(null, $this->environment, $this->config);
+        $auth = new AuthenticationLogin(null, $this->environment, $this->config);
         return $auth->handle($username, $password, $userType);
     }
 

@@ -126,6 +126,21 @@ class Client
     }
 
     /**
+     * Make a POST request to the API.
+     *
+     * @param  string  $uri  The URI to make the request to
+     * @param  array|string|null  $body  The body of the request
+     * @param  array|null  $query  The query parameters
+     *
+     * @return $this
+     * @throws ErganiException
+     */
+    protected function post(string $uri, array|string|null $body = null, ?array $query = null): static
+    {
+        return $this->request('POST', $uri, $body, $query);
+    }
+
+    /**
      * Make a request to the API.
      *
      * @throws ErganiException
@@ -265,21 +280,6 @@ class Client
     }
 
     /**
-     * Make a POST request to the API.
-     *
-     * @param  string  $uri  The URI to make the request to
-     * @param  array|string|null  $body  The body of the request
-     * @param  array|null  $query  The query parameters
-     *
-     * @return $this
-     * @throws ErganiException
-     */
-    protected function post(string $uri, array|string|null $body = null, ?array $query = null): static
-    {
-        return $this->request('POST', $uri, $body, $query);
-    }
-
-    /**
      * Morphs the JSON response to an array of objects.
      * @param  string  $morphClass  The class to morph the JSON to
      * @return array The array of morphed objects
@@ -326,7 +326,7 @@ class Client
      * @param  string  $morphClass  The class to morph the JSON to
      * @return mixed The morphed object
      */
-    protected function morphToClass(string $morphClass): mixed
+    protected function morphTo(string $morphClass): mixed
     {
         return new $morphClass($this->json());
     }

@@ -3,13 +3,13 @@
 
 namespace Tests;
 
-use OxygenSuite\OxygenErgani\Http\Auth\Authentication;
+use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogin;
 
 class AuthenticationTest extends TestCase
 {
     public function test_authentication(): void
     {
-        $auth = new Authentication();
+        $auth = new AuthenticationLogin();
         $auth->getConfig()->setHandler($this->mockResponse(200, 'authentication.php'));
         $response = $auth->handle('username', 'password');
 
