@@ -2,25 +2,17 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Tests;
+namespace Tests\Documents;
 
 use OxygenSuite\OxygenErgani\Enums\CardDetailType;
 use OxygenSuite\OxygenErgani\Http\Documents\WorkCard;
 use OxygenSuite\OxygenErgani\Models\Card;
 use OxygenSuite\OxygenErgani\Models\CardDetail;
+use Tests\TestCase;
 
 class WorkCardTest extends TestCase
 {
-    public function test_schema(): void
-    {
-        $workCard = new WorkCard("test-access-token");
-        $workCard->getConfig()->setHandler($this->mockResponse(200, 'work-card-schema.php'));
-        $workCard->schema();
-
-        $this->assertTrue($workCard->isSuccessful());
-    }
-
-    public function test_work_card_submission(): void
+    public function test_work_card_submit(): void
     {
         $card = Card::make()
             ->setEmployerTin('999999999')
@@ -42,6 +34,24 @@ class WorkCardTest extends TestCase
         $response = $workCard->handle($card);
 
         $this->assertIsArray($response);
+    }
+
+    public function test_work_card_schema(): void
+    {
+        $workCard = new WorkCard("test-access-token");
+        $workCard->getConfig()->setHandler($this->mockResponse(200, 'work-card-schema.php'));
+        $workCard->schema();
+
+        $this->assertTrue($workCard->isSuccessful());
+    }
+
+    public function test_work_card_pdf(): void
+    {
+        $workCard = new WorkCard("test-access-token");
+        $workCard->getConfig()->setHandler($this->mockResponse(200, 'pdf.txt'));
+        $workCard->pdf("ΕΥΣ92", 19800410);
+
+        $this->assertTrue($workCard->isSuccessful());
     }
 
     public function test_card_model(): void

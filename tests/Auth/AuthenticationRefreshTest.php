@@ -2,9 +2,10 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Tests;
+namespace Tests\Auth;
 
 use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationRefresh;
+use Tests\TestCase;
 
 class AuthenticationRefreshTest extends TestCase
 {

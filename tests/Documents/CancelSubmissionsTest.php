@@ -2,9 +2,10 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Tests;
+namespace Tests\Documents;
 
 use OxygenSuite\OxygenErgani\Http\Documents\CancelSubmittedDocument;
+use Tests\TestCase;
 
 class CancelSubmissionsTest extends TestCase
 {

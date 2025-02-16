@@ -2,11 +2,12 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Tests;
+namespace Tests\Auth;
 
 use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogin;
+use Tests\TestCase;
 
-class AuthenticationTest extends TestCase
+class AuthenticationLoginTest extends TestCase
 {
     public function test_authentication(): void
     {

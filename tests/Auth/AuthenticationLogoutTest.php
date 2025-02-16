@@ -2,9 +2,10 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Tests;
+namespace Tests\Auth;
 
 use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogout;
+use Tests\TestCase;
 
 class AuthenticationLogoutTest extends TestCase
 {

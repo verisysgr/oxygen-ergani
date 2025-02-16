@@ -17,8 +17,15 @@ class TestCase extends BaseCaseAlias
 
     protected function mockResponse(int $status, string $filename): MockHandler
     {
+        // If filename is php file, require it
+        if (str_ends_with($filename, '.php')) {
+            $body = json_encode($this->requireFile($filename));
+        } else {
+            $body = file_get_contents(__DIR__.'/responses/'.$filename);
+        }
+
         return new MockHandler([
-            new HttpResponse($status, body: json_encode($this->requireFile($filename))),
+            new HttpResponse($status, body: $body),
         ]);
     }
 

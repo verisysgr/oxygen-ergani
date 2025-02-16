@@ -2,9 +2,10 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Tests;
+namespace Tests\Services;
 
 use OxygenSuite\OxygenErgani\Http\Services\ServicesList;
+use Tests\TestCase;
 
 class ServicesListTest extends TestCase
 {

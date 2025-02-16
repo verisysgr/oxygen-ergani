@@ -2,9 +2,10 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
-namespace Tests;
+namespace Tests\Documents;
 
 use OxygenSuite\OxygenErgani\Http\Documents\LookupSubmissions;
+use Tests\TestCase;
 
 class LookupSubmissionsTest extends TestCase
 {
