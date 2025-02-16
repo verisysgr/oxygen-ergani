@@ -9,9 +9,42 @@ class Model
 {
     use HasAttributes;
 
+    protected array $expectedOrder = [];
+
     public function __construct(array $attributes = [])
     {
         $this->attributes = $attributes;
+    }
+
+    /**
+     * Create a new model instance.
+     *
+     * @param  array  $attributes The model attributes
+     * @return static
+     */
+    public static function make(array $attributes = []): static
+    {
+        return new static($attributes);
+    }
+
+    /**
+     * Returns the model attributes sorted according to the expected order.
+     * @return array
+     */
+    public function toSortedArray(): array
+    {
+        if (empty($this->expectedOrder)) {
+            return $this->toArray();
+        }
+
+        $sortedAttributes = [];
+        foreach ($this->expectedOrder as $key) {
+            if (array_key_exists($key, $this->attributes)) {
+                $sortedAttributes[$key] = $this->attributes[$key];
+            }
+        }
+
+        return $this->processValue($sortedAttributes, true);
     }
 
     /**
@@ -21,19 +54,22 @@ class Model
      */
     public function toArray(): array
     {
-        $array = [];
-        foreach ($this->attributes() as $key => $value) {
-            if ($value instanceof Model) {
-                $array[$key] = $value->toArray();
-            } elseif ($value instanceof BackedEnum) {
-                $array[$key] = $value->value;
-            } elseif (is_array($value)) {
-                $array[$key] = array_map(fn ($v) => $v instanceof Model ? $v->toArray() : $v, $value);
-            } else {
-                $array[$key] = $value;
-            }
-        }
+        return $this->processValue($this->attributes());
+    }
 
-        return $array;
+    /**
+     * Processes a value to convert it to array format.
+     *
+     * @param mixed $value The value to process
+     * @return array The processed value
+     */
+    protected function processValue(mixed $value, bool $sort = false): mixed
+    {
+        return match (true) {
+            $value instanceof self => $sort ? $value->toSortedArray() : $value->toArray(),
+            $value instanceof BackedEnum => $value->value,
+            is_array($value) => array_map(fn($item) => $this->processValue($item, $sort), $value),
+            default => $value
+        };
     }
 }

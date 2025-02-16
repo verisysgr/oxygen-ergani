@@ -47,7 +47,7 @@ trait HasAttributes
     }
 
     /**
-     * Retrieves a datetime value associated with the given key, formatted as 'Y-m-d\TH:i:s.uP'.
+     * Retrieves a datetime value associated with the given key.
      * If the key does not exist, returns the provided default value or null.
      *
      * @param  string  $key  The key to look up in the data array.

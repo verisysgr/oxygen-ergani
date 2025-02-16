@@ -22,7 +22,7 @@ class WorkCard extends Documents
             $cards = [$cards];
         }
 
-        $body = ['Cards' => ['Card' => array_map(fn (Card $card) => $card->toArray(), $cards)]];
+        $body = ['Cards' => ['Card' => array_map(fn (Card $card) => $card->toSortedArray(), $cards)]];
 
         return $this->submit($body)->morphToArray(WorkCardResponse::class);
     }

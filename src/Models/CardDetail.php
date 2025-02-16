@@ -2,10 +2,21 @@
 
 namespace OxygenSuite\OxygenErgani\Models;
 
+use DateTime;
 use OxygenSuite\OxygenErgani\Enums\CardDetailType;
 
 class CardDetail extends Model
 {
+    protected array $expectedOrder = [
+        'f_afm',
+        'f_eponymo',
+        'f_onoma',
+        'f_type',
+        'f_reference_date',
+        'f_date',
+        'f_aitiologia',
+    ];
+
     public function getTinNumber(): ?string
     {
         return $this->get('f_afm');
@@ -38,12 +49,17 @@ class CardDetail extends Model
 
     public function getType(): ?CardDetailType
     {
+        $value = $this->get('f_type');
+        if (is_string($value)) {
+            return CardDetailType::tryFrom($value);
+        }
+
         return $this->get('f_type');
     }
 
-    public function setType(CardDetailType|string $type): static
+    public function setType(CardDetailType $type): static
     {
-        return $this->set('f_type', $type);
+        return $this->set('f_type', $type->value);
     }
 
     public function getReferenceDate(): ?string
@@ -51,8 +67,16 @@ class CardDetail extends Model
         return $this->get('f_reference_date');
     }
 
-    public function setReferenceDate(string $referenceDate): static
+    /**
+     * @param  DateTime|string  $referenceDate Format: YYYY-MM-DD
+     * @return $this
+     */
+    public function setReferenceDate(DateTime|string $referenceDate): static
     {
+        if ($referenceDate instanceof DateTime) {
+            $referenceDate = $referenceDate->format('Y-m-d');
+        }
+
         return $this->set('f_reference_date', $referenceDate);
     }
 
@@ -61,8 +85,16 @@ class CardDetail extends Model
         return $this->get('f_date');
     }
 
-    public function setDate(string $date): static
+    /**
+     * @param  DateTime|string  $date  Format: YYYY-MM-DD\THH:MM:SS.uP
+     * @return $this
+     */
+    public function setDate(DateTime|string $date): static
     {
+        if ($date instanceof DateTime) {
+            $date = $date->format('Y-m-d\TH:i:s.uP');
+        }
+
         return $this->set('f_date', $date);
     }
 
@@ -71,7 +103,7 @@ class CardDetail extends Model
         return $this->get('f_aitiologia');
     }
 
-    public function setReasonCode(string $reasonCode): static
+    public function setReasonCode(?string $reasonCode): static
     {
         return $this->set('f_aitiologia', $reasonCode);
     }
