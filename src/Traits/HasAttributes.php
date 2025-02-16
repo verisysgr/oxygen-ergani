@@ -3,6 +3,7 @@
 namespace OxygenSuite\OxygenErgani\Traits;
 
 use DateTime;
+use DateTimeZone;
 use Throwable;
 
 trait HasAttributes
@@ -51,18 +52,19 @@ trait HasAttributes
      * If the key does not exist, returns the provided default value or null.
      *
      * @param  string  $key  The key to look up in the data array.
+     * @param  string  $tz  The timezone to use when creating the DateTime object.
      * @param  mixed  $default  The default value to return if the key is not found or invalid.
      * @return DateTime|null The DateTime object created from the value, or null if not found or invalid.
      */
-    public function datetime(string $key, mixed $default = null): ?DateTime
+    public function datetime(string $key, string $tz = 'UTC', mixed $default = null): ?DateTime
     {
         $value = $this->string($key, $default);
         if ($value === null) {
-            return null;
+            return $default;
         }
 
         try {
-            return new DateTime($value);
+            return new DateTime($value, new DateTimeZone($tz));
         } catch (Throwable) {
             return $default;
         }
@@ -147,5 +149,20 @@ trait HasAttributes
     {
         $value = $this->get($key, $default);
         return is_array($value) ? $value : $default;
+    }
+
+    /**
+     * Retrieves the current date and time as a DateTime object.
+     *
+     * @param  string  $tz
+     * @return DateTime|null
+     */
+    public function now(string $tz = "UTC"): ?DateTime
+    {
+        try {
+            return new DateTime('now', new DateTimeZone($tz));
+        } catch (Throwable) {
+            return null;
+        }
     }
 }
