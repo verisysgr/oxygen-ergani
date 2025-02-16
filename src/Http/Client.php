@@ -17,7 +17,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class Client
 {
-    private ?string $accessToken;
     private Environment $environment;
     private ClientConfig $config;
     private ?ResponseInterface $response;
@@ -32,9 +31,12 @@ class Client
      */
     public function __construct(?string $accessToken = null, ?Environment $environment = null, ?ClientConfig $config = null)
     {
-        $this->accessToken = $accessToken;
         $this->environment = $environment ?? Environment::TEST;
         $this->config = $config ?? new ClientConfig();
+
+        if (!empty($accessToken)) {
+            $this->config->setBearerToken($accessToken);
+        }
     }
 
     /**
@@ -194,10 +196,6 @@ class Client
     protected function buildRequestOptions(?array $query = null, array|string|null $body = null): array
     {
         $options = [];
-
-        if (!empty($this->accessToken)) {
-            $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->accessToken";
-        }
 
         if (!empty($query)) {
             $options[RequestOptions::QUERY] = $query;

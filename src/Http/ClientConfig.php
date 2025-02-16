@@ -81,6 +81,26 @@ class ClientConfig
     }
 
     /**
+     * Get the bearer token for the request.
+     * @return string|null
+     */
+    public function getBearerToken(): ?string
+    {
+        return str_replace("Bearer ", "", $this->options['headers']['Authorization'] ?? null);
+    }
+
+    /**
+     * Set the bearer token for the request.
+     * @param  string  $token
+     * @return $this
+     */
+    public function setBearerToken(string $token): static
+    {
+        $this->options['headers']['Authorization'] = 'Bearer '.$token;
+        return $this;
+    }
+
+    /**
      * Set the request handler for the client. Useful for testing purposes.
      *
      * @param  MockHandler|null  $handler
