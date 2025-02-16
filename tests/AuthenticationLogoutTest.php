@@ -1,6 +1,6 @@
 <?php
 
-/** @noinspection ALL */
+/** @noinspection PhpUnhandledExceptionInspection */
 
 namespace Tests;
 

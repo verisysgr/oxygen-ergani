@@ -12,7 +12,8 @@ class AuthenticationRefresh extends Client
     private const URI = 'Authentication/Refresh';
 
     /**
-     * Refreshes the access and the refresh token.
+     * Refreshes the access token and the refresh token.
+     * Refresh token must be expired.
      *
      * @param  string  $accessToken
      * @param  string  $refreshToken

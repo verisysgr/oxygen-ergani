@@ -1,6 +1,6 @@
 <?php
 
-/** @noinspection ALL */
+/** @noinspection PhpUnhandledExceptionInspection */
 
 namespace Tests;
 
@@ -13,7 +13,7 @@ class WorkCardTest extends TestCase
     {
         $workCard = new WorkCard("test-access-token");
         $workCard->getConfig()->setHandler($this->mockResponse(200, 'work-card-schema.php'));
-        $response = $workCard->schema();
+        $workCard->schema();
 
         $this->assertTrue($workCard->isSuccessful());
     }

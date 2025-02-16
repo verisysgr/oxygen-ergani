@@ -4,15 +4,15 @@
 
 namespace Tests;
 
-use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogin;
+use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationRefresh;
 
-class AuthenticationTest extends TestCase
+class AuthenticationRefreshTest extends TestCase
 {
-    public function test_authentication(): void
+    public function test_authentication_logout(): void
     {
-        $auth = new AuthenticationLogin();
+        $auth = new AuthenticationRefresh();
         $auth->getConfig()->setHandler($this->mockResponse(200, 'authentication.php'));
-        $response = $auth->handle('username', 'password');
+        $response = $auth->handle('old-test-access-token', 'old-test-refresh-token');
 
         $this->assertNotNull($response);
         $this->assertSame('test-access-token', $response->accessToken);
