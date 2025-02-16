@@ -311,15 +311,15 @@ class Client
         return $this->response?->getBody()->getContents() ?? $default;
     }
 
-//    /**
-//     * @throws SessionExpiredException
-//     */
-//    protected function validateResponse(): void
-//    {
-//        if ($this->response->getHeaderLine('api-token-expired') === 'true') {
-//            throw new SessionExpiredException();
-//        }
-//    }
+    //    /**
+    //     * @throws SessionExpiredException
+    //     */
+    //    protected function validateResponse(): void
+    //    {
+    //        if ($this->response->getHeaderLine('api-token-expired') === 'true') {
+    //            throw new SessionExpiredException();
+    //        }
+    //    }
 
     /**
      * Morphs the JSON response to an object.

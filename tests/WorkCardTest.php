@@ -1,9 +1,9 @@
 <?php
+
 /** @noinspection ALL */
 
 namespace Tests;
 
-use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogout;
 use OxygenSuite\OxygenErgani\Http\Documents\WorkCard;
 use OxygenSuite\OxygenErgani\Models\Card;
 
