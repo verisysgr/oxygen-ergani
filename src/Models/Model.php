@@ -3,32 +3,30 @@
 namespace OxygenSuite\OxygenErgani\Models;
 
 use BackedEnum;
+use OxygenSuite\OxygenErgani\Traits\HasAttributes;
 
 class Model
 {
-    protected array $attributes = [];
+    use HasAttributes;
 
-    public function get(string $key, mixed $default = null): mixed
+    public function __construct(array $attributes = [])
     {
-        return $this->attributes[$key] ?? $default;
+        $this->attributes = $attributes;
     }
 
-    public function set(string $key, mixed $value): static
-    {
-        if ($value instanceof BackedEnum) {
-            $value = $value->value;
-        }
-
-        $this->attributes[$key] = $value;
-        return $this;
-    }
-
+    /**
+     * Converts the object and its attributes into an associative array.
+     *
+     * @return array An array representation of the object attributes.
+     */
     public function toArray(): array
     {
         $array = [];
         foreach ($this->attributes() as $key => $value) {
             if ($value instanceof Model) {
                 $array[$key] = $value->toArray();
+            } elseif ($value instanceof BackedEnum) {
+                $array[$key] = $value->value;
             } elseif (is_array($value)) {
                 $array[$key] = array_map(fn ($v) => $v instanceof Model ? $v->toArray() : $v, $value);
             } else {
@@ -37,10 +35,5 @@ class Model
         }
 
         return $array;
-    }
-
-    public function attributes(): array
-    {
-        return $this->attributes;
     }
 }

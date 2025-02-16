@@ -40,14 +40,7 @@ class Card extends Model
      */
     public function setDetails(array $cardDetails): static
     {
-        return $this->set('Cards', ['Card' => $cardDetails]);
-    }
-
-    public function addDetail(CardDetail $cardDetail): static
-    {
-        $details = $this->getDetails() ?? [];
-        $details[] = $cardDetail;
-        return $this->set('Cards', $details);
+        return $this->set('Details', ['CardDetails' => $cardDetails]);
     }
 
     /**
@@ -55,7 +48,25 @@ class Card extends Model
      */
     public function getDetails(): ?array
     {
-        $cards = $this->get('Cards');
-        return $cards['Card'] ?? null;
+        $cards = $this->get('Details');
+        return $cards['Details']['CardDetails'] ?? null;
+    }
+
+    /**
+     * Adds a card detail to the current list of details.
+     *
+     * @param  CardDetail|CardDetail[]  $cardDetail  The card detail object to be added.
+     * @return static
+     */
+    public function addCardDetail(CardDetail|array $cardDetail): static
+    {
+        $details = $this->getDetails() ?? [];
+        if ($cardDetail instanceof CardDetail) {
+            $details[] = $cardDetail;
+        } else {
+            $details = array_merge($details, $cardDetail);
+        }
+
+        return $this->setDetails($details);
     }
 }
