@@ -55,21 +55,21 @@ class FileTokenTest extends TestCase
         $token->accessToken = 'test-access-token';
         $token->accessTokenExpiresAt = new DateTimeImmutable('yesterday');
         $token->refreshToken = 'test-refresh-token';
-        $token->refreshTokenExpiresAt = new DateTimeImmutable('tomorrow');
+        $token->refreshTokenExpiresAt = new DateTimeImmutable('yesterday');
 
         $fileToken = FileToken::fake('username', 'password');
         $fileToken->setAuthToken($token);
         $this->assertFileExists($fileToken->path());
 
-        $fileToken->setLoginHandler($this->mockResponse(401)); // Could not authenticate
-        $fileToken->setRefreshHandler($this->mockResponse(401)); // Could not refresh token
-
         $this->assertNotNull($fileToken->authToken());
+        $fileToken->setLoginHandler($this->mockResponse(401)); // Could not authenticate
 
         try {
             $fileToken->authenticate();
         } catch (Exception) {
         }
+
+        $this->assertTrue($fileToken->loginCalled());
 
         $this->assertFileDoesNotExist($fileToken->path());
         $this->assertNull($fileToken->authToken());
