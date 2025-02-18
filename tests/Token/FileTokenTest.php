@@ -6,6 +6,7 @@ namespace Tests\Token;
 
 use DateTimeImmutable;
 use Exception;
+use OxygenSuite\OxygenErgani\Exceptions\AuthenticationException;
 use OxygenSuite\OxygenErgani\Http\Documents\WorkCard;
 use OxygenSuite\OxygenErgani\Responses\AuthenticationToken;
 use OxygenSuite\OxygenErgani\Storage\FileToken;
@@ -73,6 +74,47 @@ class FileTokenTest extends TestCase
 
         $this->assertFileDoesNotExist($fileToken->path());
         $this->assertNull($fileToken->authToken());
+    }
+
+    /**
+     * Expected behavior:
+     * 1. See that access token doesn't exist
+     * 2. Calls login
+     */
+    public function test_first_time_usage_with_successful_auth(): void
+    {
+        $fake = FileToken::fake('username', 'password');
+        $fake->setLoginHandler($this->mockResponse(200, 'new-authentication.json'));
+        Token::setCurrentTokenManager($fake);
+
+        $wrkCard = new WorkCard();
+        $wrkCard->getConfig()->setHandler($this->mockResponse(200, 'work-card.json'));
+        $wrkCard->schema();
+
+        $this->assertFalse($fake->refreshCalled());
+        $this->assertTrue($fake->loginCalled());
+    }
+
+    /**
+     * Expected behavior:
+     * 1. See that access token doesn't exist
+     * 2. Calls login
+     * 3. Fails authentication
+     */
+    public function test_first_time_usage_with_failed_auth(): void
+    {
+        $this->expectException(AuthenticationException::class);
+
+        $fake = FileToken::fake('wrong-username', 'wrong-password');
+        $fake->setLoginHandler($this->mockResponse(401));
+        Token::setCurrentTokenManager($fake);
+
+        $wrkCard = new WorkCard();
+        $wrkCard->getConfig()->setHandler($this->mockResponse(200, 'work-card.json'));
+        $wrkCard->schema();
+
+        $this->assertFalse($fake->refreshCalled());
+        $this->assertTrue($fake->loginCalled());
     }
 
     /**

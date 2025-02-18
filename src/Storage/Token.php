@@ -53,9 +53,15 @@ abstract class Token implements TokenManager
      */
     public function authenticate(): ?string
     {
-        if (empty($this->username) || empty($this->password) || empty($this->getAccessToken())) {
+        if (empty($this->username) || empty($this->password)) {
             $this->clear();
             return null;
+        }
+
+        // If the access token is empty, authenticate.
+        // This is probably the first time the user is authenticating.
+        if (empty($this->getAccessToken())) {
+            return $this->loginAndReturnAccessToken();
         }
 
         // If the access token is not expired, return it
@@ -89,7 +95,7 @@ abstract class Token implements TokenManager
             return $this->getAccessToken();
         } catch (AuthenticationException $e) {
             $this->clear();
-            return $e;
+            throw $e;
         }
     }
 
