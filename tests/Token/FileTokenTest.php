@@ -78,7 +78,7 @@ class FileTokenTest extends TestCase
 
     /**
      * Expected behavior:
-     * 1. See that access token doesn't exist
+     * 1. Sees that access token doesn't exist
      * 2. Calls login
      */
     public function test_first_time_usage_with_successful_auth(): void
@@ -97,7 +97,7 @@ class FileTokenTest extends TestCase
 
     /**
      * Expected behavior:
-     * 1. See that access token doesn't exist
+     * 1. Sees that access token doesn't exist
      * 2. Calls login
      * 3. Fails authentication
      */
