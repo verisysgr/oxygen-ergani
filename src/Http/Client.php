@@ -299,7 +299,7 @@ class Client
         // The authentication with username and password failed.
         // This means that the username/password combination is no
         // longer valid, and thus we need to clear the active token
-        Token::currentTokenManager()?->clear();
+        Token::currentTokenManager()?->failedAuthentication();
         throw new AuthenticationException($message, 401);
     }
 

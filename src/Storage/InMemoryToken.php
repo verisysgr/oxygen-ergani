@@ -35,7 +35,7 @@ class InMemoryToken extends Token
         return $this;
     }
 
-    public function clear(): static
+    public function failedAuthentication(): static
     {
         $this->token = null;
         return $this;

@@ -54,7 +54,7 @@ abstract class Token implements TokenManager
     public function authenticate(): ?string
     {
         if (empty($this->username) || empty($this->password)) {
-            $this->clear();
+            $this->failedAuthentication();
             return null;
         }
 
@@ -94,7 +94,7 @@ abstract class Token implements TokenManager
             $this->setAuthToken($this->login());
             return $this->getAccessToken();
         } catch (AuthenticationException $e) {
-            $this->clear();
+            $this->failedAuthentication();
             throw $e;
         }
     }

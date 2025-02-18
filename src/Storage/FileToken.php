@@ -50,7 +50,7 @@ class FileToken extends Token
         return $this;
     }
 
-    public function clear(): static
+    public function failedAuthentication(): static
     {
         $this->token = null;
         $this->deleteFile();

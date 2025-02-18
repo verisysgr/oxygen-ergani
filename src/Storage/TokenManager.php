@@ -16,24 +16,28 @@ interface TokenManager
 
     /**
      * Retrieves the refresh token if it exists.
+     *
      * @return string|null Returns the refresh token as a string or null if no token is available.
      */
     public function getRefreshToken(): ?string;
 
     /**
      * Checks if the access token has expired.
+     *
      * @return bool Returns true if the access token has expired, false otherwise.
      */
     public function isAccessTokenExpired(): bool;
 
     /**
      * Checks if the refresh token has expired.
+     *
      * @return bool Returns true if the refresh token has expired, false otherwise.
      */
     public function isRefreshTokenExpired(): bool;
 
     /**
      * Sets the access token, refresh token, and their expiration times.
+     *
      * @param  AuthenticationToken  $token
      * @return static
      */
@@ -46,13 +50,15 @@ interface TokenManager
     public function authenticate(): ?string;
 
     /**
-     * Clears all data or state associated with the instance.
+     * Called when authentication fails.
+     *
      * @return static
      */
-    public function clear(): static;
+    public function failedAuthentication(): static;
 
     /**
      * Retrieves the authentication token.
+     *
      * @return AuthenticationToken|null
      */
     public function authToken(): ?AuthenticationToken;
