@@ -1,6 +1,8 @@
 <?php
 
-namespace OxygenSuite\OxygenErgani\Models;
+namespace OxygenSuite\OxygenErgani\Models\WorkCard;
+
+use OxygenSuite\OxygenErgani\Models\Model;
 
 class Card extends Model
 {

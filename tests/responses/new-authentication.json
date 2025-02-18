@@ -1,0 +1,6 @@
+{
+    "accessToken": "new-access-token",
+    "accessTokenExpired": "10800",
+    "refreshToken": "new-refresh-token",
+    "refreshTokenExpired": "2025-02-21T14:44:28.2731304+02:00"
+}

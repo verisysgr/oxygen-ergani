@@ -6,3 +6,4 @@
 /.phpunit.cache/test-results
 /storage/private
 /vendor/
+/cache/

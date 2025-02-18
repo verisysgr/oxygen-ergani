@@ -5,9 +5,9 @@
 namespace Tests\Documents;
 
 use OxygenSuite\OxygenErgani\Http\Documents\DailyWorkTime;
-use OxygenSuite\OxygenErgani\Models\WTO;
-use OxygenSuite\OxygenErgani\Models\WTOAnalytics;
-use OxygenSuite\OxygenErgani\Models\WTOEmployee;
+use OxygenSuite\OxygenErgani\Models\WTO\WTO;
+use OxygenSuite\OxygenErgani\Models\WTO\WTOAnalytics;
+use OxygenSuite\OxygenErgani\Models\WTO\WTOEmployee;
 use Tests\TestCase;
 
 class WTOTest extends TestCase

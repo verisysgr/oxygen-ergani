@@ -9,8 +9,8 @@ use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogin;
 use OxygenSuite\OxygenErgani\Http\ClientConfig;
 use OxygenSuite\OxygenErgani\Http\Documents\WorkCard;
 use OxygenSuite\OxygenErgani\Http\Services\ServicesList;
-use OxygenSuite\OxygenErgani\Models\Card;
-use OxygenSuite\OxygenErgani\Responses\AuthenticationResponse;
+use OxygenSuite\OxygenErgani\Models\WorkCard\Card;
+use OxygenSuite\OxygenErgani\Responses\AuthenticationToken;
 use OxygenSuite\OxygenErgani\Responses\WorkCardResponse;
 
 class Ergani
@@ -29,7 +29,7 @@ class Ergani
     /**
      * @throws ErganiException
      */
-    public function authenticate(string $username, string $password, UserType $userType = UserType::EXTERNAL): AuthenticationResponse
+    public function authenticate(string $username, string $password, UserType $userType = UserType::EXTERNAL): AuthenticationToken
     {
         $auth = new AuthenticationLogin(null, $this->environment, $this->config);
         return $auth->handle($username, $password, $userType);

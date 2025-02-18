@@ -2,6 +2,6 @@
 
 namespace OxygenSuite\OxygenErgani\Exceptions;
 
-class SessionExpiredException extends ErganiException
+class TokenExpiredException extends ErganiException
 {
 }

@@ -8,9 +8,9 @@ abstract class Response
 {
     use HasAttributes;
 
-    public function __construct(mixed $attributes)
+    public function __construct(mixed $attributes = [])
     {
-        if (!is_array($attributes)) {
+        if (!is_array($attributes) || empty($attributes)) {
             return;
         }
 

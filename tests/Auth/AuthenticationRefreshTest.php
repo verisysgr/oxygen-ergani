@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class AuthenticationRefreshTest extends TestCase
 {
-    public function test_authentication_logout(): void
+    public function test_authentication_refresh(): void
     {
         $auth = new AuthenticationRefresh();
         $auth->getConfig()->setHandler($this->mockResponse(200, 'authentication.json'));
@@ -17,8 +17,7 @@ class AuthenticationRefreshTest extends TestCase
 
         $this->assertNotNull($response);
         $this->assertSame('test-access-token', $response->accessToken);
-        $this->assertSame(10800, $response->accessTokenExpired);
         $this->assertSame('test-refresh-token', $response->refreshToken);
-        $this->assertDates('2025-02-21T14:44:28.2731304+02:00', $response->refreshTokenExpired);
+        $this->assertDates('2025-02-21T14:44:28.2731304+02:00', $response->refreshTokenExpiresAt);
     }
 }

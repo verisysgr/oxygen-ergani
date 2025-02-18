@@ -3,7 +3,7 @@
 namespace OxygenSuite\OxygenErgani\Http\Documents;
 
 use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
-use OxygenSuite\OxygenErgani\Models\WTO;
+use OxygenSuite\OxygenErgani\Models\WTO\WTO;
 use OxygenSuite\OxygenErgani\Responses\WTOResponse;
 
 class DailyWorkTime extends Documents

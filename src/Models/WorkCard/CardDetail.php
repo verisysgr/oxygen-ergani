@@ -1,9 +1,10 @@
 <?php
 
-namespace OxygenSuite\OxygenErgani\Models;
+namespace OxygenSuite\OxygenErgani\Models\WorkCard;
 
 use DateTime;
 use OxygenSuite\OxygenErgani\Enums\CardDetailType;
+use OxygenSuite\OxygenErgani\Models\Model;
 
 class CardDetail extends Model
 {

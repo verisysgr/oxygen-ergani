@@ -86,7 +86,17 @@ class ClientConfig
      */
     public function getBearerToken(): ?string
     {
-        return str_replace("Bearer ", "", $this->options['headers']['Authorization'] ?? null);
+        $bearer = $this->options['headers']['Authorization'] ?? "";
+        if (empty(trim($bearer))) {
+            return null;
+        }
+
+        return str_replace("Bearer ", "", $bearer);
+    }
+
+    public function hasAccessToken(): bool
+    {
+        return !empty($this->getBearerToken());
     }
 
     /**

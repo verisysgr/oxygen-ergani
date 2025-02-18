@@ -4,19 +4,19 @@ namespace OxygenSuite\OxygenErgani\Http;
 
 use GuzzleHttp\Client as BaseClient;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use InvalidArgumentException;
 use OxygenSuite\OxygenErgani\Enums\Environment;
 use OxygenSuite\OxygenErgani\Exceptions\AuthenticationException;
 use OxygenSuite\OxygenErgani\Exceptions\ConnectionException;
 use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
-use OxygenSuite\OxygenErgani\Exceptions\SessionExpiredException;
-use OxygenSuite\OxygenErgani\Exceptions\TimeoutException;
+use OxygenSuite\OxygenErgani\Exceptions\TokenExpiredException;
+use OxygenSuite\OxygenErgani\Storage\Token;
 use Psr\Http\Message\ResponseInterface;
 
 class Client
 {
+    private ?string $accessToken;
     private Environment $environment;
     private ClientConfig $config;
     private ?ResponseInterface $response;
@@ -31,12 +31,9 @@ class Client
      */
     public function __construct(?string $accessToken = null, ?Environment $environment = null, ?ClientConfig $config = null)
     {
+        $this->accessToken = $accessToken;
         $this->environment = $environment ?? Environment::TEST;
         $this->config = $config ?? new ClientConfig();
-
-        if (!empty($accessToken)) {
-            $this->config->setBearerToken($accessToken);
-        }
     }
 
     /**
@@ -105,6 +102,7 @@ class Client
 
     /**
      * Returns the status code of the response.
+     *
      * @return bool Whether the request was successful
      */
     public function isSuccessful(): bool
@@ -156,10 +154,45 @@ class Client
         try {
             $this->response = $client->request($method, $uri, $this->buildRequestOptions($query, $body));
             $this->validateResponse();
-
             return $this;
+        } catch (TokenExpiredException $e) {
+            // Access token has expired, try to refresh it
+            if (Token::hasTokenManager()) {
+                Token::currentTokenManager()->authenticate();
+                return $this->request($method, $uri, $body, $query);
+            }
+
+            throw $e;
         } catch (GuzzleException $e) {
-            $this->handleRequestException($e);
+            throw new ErganiException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * Set the access token for the client. This overrides the current token manager.
+     *
+     * @return void
+     * @throws AuthenticationException
+     */
+    protected function initAccessToken(): void
+    {
+        if (!$this->requiresAuthentication()) {
+            return;
+        }
+
+        if (empty($this->accessToken) && empty(Token::currentTokenManager())) {
+            throw new AuthenticationException('Access token is required');
+        }
+
+        // Set the access token if provided, overrides the current token manager
+        if (!empty($this->accessToken)) {
+            $this->config->setBearerToken($this->accessToken);
+            return;
+        }
+
+        // Access token is not provided, try to get it from the current token manager
+        if ($cachedAccessToken = Token::currentTokenManager()->authenticate()) {
+            $this->config->setBearerToken($cachedAccessToken);
         }
     }
 
@@ -181,11 +214,15 @@ class Client
      * provided configuration.
      *
      * @return BaseClient
+     * @throws AuthenticationException
      */
     protected function createClient(): BaseClient
     {
+        $this->initAccessToken();
+
         return new BaseClient([
             'base_uri' => $this->environment->getApiUrl(),
+            'http_errors' => false,
             ...$this->config->getOptions(),
         ]);
     }
@@ -211,23 +248,6 @@ class Client
     }
 
     /**
-     * Validate the response.
-     *
-     * @throws AuthenticationException
-     * @throws SessionExpiredException
-     */
-    protected function validateResponse(): void
-    {
-        $statusCode = $this->response?->getStatusCode();
-
-        match ($statusCode) {
-            401 => throw new AuthenticationException('Invalid authentication credentials'),
-            403 => throw new SessionExpiredException('Session has expired'),
-            default => null
-        };
-    }
-
-    /**
      * Returns the status code of the response.
      * @return int|null
      */
@@ -237,44 +257,73 @@ class Client
     }
 
     /**
-     * @throws TimeoutException
      * @throws ConnectionException
      * @throws AuthenticationException
      * @throws ErganiException
      */
-    protected function handleRequestException(GuzzleException $exception)
+    protected function validateResponse(): void
     {
-        // Specific case for timeout exception (HTTP 28 for cURL)
-        // Connection with myDATA was established but the response took too long
-        if ($exception instanceof RequestException) {
-            $errorNo = $exception->getHandlerContext()['errno'] ?? null;
-            if ($errorNo === 28) {
-                throw new TimeoutException(previous: $exception);
-            }
+        if ($this->isSuccessful()) {
+            return;
         }
 
-        $message = $exception->getMessage();
+        $message = $this->response->getReasonPhrase();
+        $code = $this->response->getStatusCode();
 
-        // In case the endpoint url is wrong or connection timed out, myDATA is unreachable
-        if ($exception->getCode() === 0) {
-            throw new ConnectionException($message, $exception->getCode(), $exception);
+        // Handle connection issues
+        if ($code === 0) {
+            throw new ConnectionException($message, $code);
         }
 
-        $contents = json_decode($exception->getResponse()->getBody()->getContents(), true);
-        if (is_string($contents) && json_last_error() === JSON_ERROR_NONE) {
-            $message = $contents;
-        } else {
-            if (is_array($contents) && json_last_error() === JSON_ERROR_NONE) {
-                $message = $contents['message'] ?? $message;
-            }
+        // Handle authentication issues
+        if ($code === 401) {
+            $this->handleAuthenticationError();
         }
 
-        // Authentication with myDATA failed
-        if ($exception->getCode() === 401) {
-            throw new AuthenticationException($message, $exception->getCode(), previous: $exception);
+        throw new ErganiException($message, $code);
+    }
+
+    /**
+     * Handle authentication errors.
+     * @throws TokenExpiredException
+     * @throws AuthenticationException
+     */
+    private function handleAuthenticationError(): never
+    {
+        $message = $this->extractMessageFromResponse();
+
+        if ($this->apiTokenExpired()) {
+            throw new TokenExpiredException($message, 401);
         }
 
-        throw new ErganiException($message, $exception->getCode(), $exception);
+        // The authentication with username and password failed.
+        // This means that the username/password combination is no
+        // longer valid, and thus we need to clear the active token
+        Token::currentTokenManager()?->clear();
+        throw new AuthenticationException($message, 401);
+    }
+
+    /**
+     * Extract the message from the response.
+     * @return string
+     */
+    private function extractMessageFromResponse(): string
+    {
+        $contents = $this->json();
+        if (is_string($contents)) {
+            return $contents;
+        }
+
+        return $contents['message'] ?? '';
+    }
+
+    /**
+     * Check if the API token has expired.
+     * @return bool
+     */
+    protected function apiTokenExpired(): bool
+    {
+        return $this->response->getHeaderLine("api-token-expired") === 'true';
     }
 
     /**
@@ -289,9 +338,9 @@ class Client
 
     /**
      * Convert the response to JSON.
-     * @return array The JSON response or empty array if invalid
+     * @return mixed The JSON response or empty array if invalid
      */
-    protected function json(): array
+    protected function json(): mixed
     {
         $json = json_decode($this->contents([]), true);
 
@@ -309,16 +358,6 @@ class Client
         return $this->response?->getBody()->getContents() ?? $default;
     }
 
-    //    /**
-    //     * @throws SessionExpiredException
-    //     */
-    //    protected function validateResponse(): void
-    //    {
-    //        if ($this->response->getHeaderLine('api-token-expired') === 'true') {
-    //            throw new SessionExpiredException();
-    //        }
-    //    }
-
     /**
      * Morphs the JSON response to an object.
      * @param  string  $morphClass  The class to morph the JSON to
@@ -327,5 +366,10 @@ class Client
     protected function morphTo(string $morphClass): mixed
     {
         return new $morphClass($this->json());
+    }
+
+    protected function requiresAuthentication(): bool
+    {
+        return true;
     }
 }

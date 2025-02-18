@@ -1,6 +1,8 @@
 <?php
 
-namespace OxygenSuite\OxygenErgani\Models;
+namespace OxygenSuite\OxygenErgani\Models\WTO;
+
+use OxygenSuite\OxygenErgani\Models\Model;
 
 class WTOEmployee extends Model
 {

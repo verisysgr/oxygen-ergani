@@ -3,7 +3,7 @@
 namespace OxygenSuite\OxygenErgani\Http\Documents;
 
 use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
-use OxygenSuite\OxygenErgani\Models\Card;
+use OxygenSuite\OxygenErgani\Models\WorkCard\Card;
 use OxygenSuite\OxygenErgani\Responses\WorkCardResponse;
 
 class WorkCard extends Documents

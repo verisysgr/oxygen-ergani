@@ -6,8 +6,8 @@ namespace Tests\Documents;
 
 use OxygenSuite\OxygenErgani\Enums\CardDetailType;
 use OxygenSuite\OxygenErgani\Http\Documents\WorkCard;
-use OxygenSuite\OxygenErgani\Models\Card;
-use OxygenSuite\OxygenErgani\Models\CardDetail;
+use OxygenSuite\OxygenErgani\Models\WorkCard\Card;
+use OxygenSuite\OxygenErgani\Models\WorkCard\CardDetail;
 use Tests\TestCase;
 
 class WorkCardTest extends TestCase
@@ -24,7 +24,7 @@ class WorkCardTest extends TestCase
                     ->setFirstName('John')
                     ->setLastName('Doe')
                     ->setType(CardDetailType::CHECK_IN)
-                    ->setReferenceDate('2025-02-21')
+                    ->setReferenceDate(date('Y-m-d'))
                     ->setDate(date('Y-m-d\TH:i:s.uP'))
                     ->setReasonCode(null)
             );
@@ -34,14 +34,18 @@ class WorkCardTest extends TestCase
         $response = $workCard->handle($card);
 
         $this->assertIsArray($response);
+        $this->assertSame('92', $response[0]->id);
+        $this->assertSame('ΕΥΣ92', $response[0]->protocol);
+        $this->assertSame('04/05/2022 01:13', $response[0]->submissionDate->format('d/m/Y H:i'));
     }
 
     public function test_work_card_schema(): void
     {
         $workCard = new WorkCard("test-access-token");
         $workCard->getConfig()->setHandler($this->mockResponse(200, 'work-card-schema.json'));
-        $workCard->schema();
+        $schema = $workCard->schema();
 
+        $this->assertIsArray($schema);
         $this->assertTrue($workCard->isSuccessful());
     }
 
@@ -49,8 +53,9 @@ class WorkCardTest extends TestCase
     {
         $workCard = new WorkCard("test-access-token");
         $workCard->getConfig()->setHandler($this->mockResponse(200, 'pdf.txt'));
-        $workCard->pdf("ΕΥΣ92", 19800410);
+        $response = $workCard->pdf("ΕΥΣ92", 20220504);
 
+        $this->assertNotNull($response);
         $this->assertTrue($workCard->isSuccessful());
     }
 

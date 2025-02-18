@@ -3,7 +3,7 @@
 namespace OxygenSuite\OxygenErgani\Http\Auth;
 
 use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
-use OxygenSuite\OxygenErgani\Exceptions\SessionExpiredException;
+use OxygenSuite\OxygenErgani\Exceptions\TokenExpiredException;
 use OxygenSuite\OxygenErgani\Http\Client;
 
 class AuthenticationLogout extends Client
@@ -16,7 +16,7 @@ class AuthenticationLogout extends Client
      * @param  string  $refreshToken
      * @return bool
      * @throws ErganiException
-     * @throws SessionExpiredException
+     * @throws TokenExpiredException
      */
     public function handle(string $refreshToken): bool
     {

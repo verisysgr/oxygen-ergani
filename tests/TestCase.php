@@ -10,22 +10,15 @@ use PHPUnit\Framework\TestCase as BaseCaseAlias;
 
 class TestCase extends BaseCaseAlias
 {
-    protected function requireFile(string $filename): array
+    protected function readFile(string $filename): string
     {
-        return require __DIR__.'/responses/'.$filename;
+        return file_get_contents(__DIR__.'/responses/'.$filename);
     }
 
-    protected function mockResponse(int $status, string $filename): MockHandler
+    protected function mockResponse(int $status, ?string $filename = null): MockHandler
     {
-        // If filename is php file, require it
-        if (str_ends_with($filename, '.php')) {
-            $body = json_encode($this->requireFile($filename));
-        } else {
-            $body = file_get_contents(__DIR__.'/responses/'.$filename);
-        }
-
         return new MockHandler([
-            new HttpResponse($status, body: $body),
+            new HttpResponse($status, body: $filename ? $this->readFile($filename) : null),
         ]);
     }
 

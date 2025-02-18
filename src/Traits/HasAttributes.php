@@ -3,6 +3,8 @@
 namespace OxygenSuite\OxygenErgani\Traits;
 
 use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use DateTimeZone;
 use Throwable;
 
@@ -52,19 +54,24 @@ trait HasAttributes
      * If the key does not exist, returns the provided default value or null.
      *
      * @param  string  $key  The key to look up in the data array.
-     * @param  string  $tz  The timezone to use when creating the DateTime object.
+     * @param  string|null  $format  The format to use when creating the DateTime object.
+     * @param  string|null  $timezone  The timezone to use when creating the DateTime object.
      * @param  mixed  $default  The default value to return if the key is not found or invalid.
-     * @return DateTime|null The DateTime object created from the value, or null if not found or invalid.
+     * @return DateTimeImmutable|null The DateTime object created from the value, or null if not found or invalid.
      */
-    public function datetime(string $key, string $tz = 'UTC', mixed $default = null): ?DateTime
+    public function date(string $key, ?string $format = null, ?string $timezone = null, mixed $default = null): ?DateTimeInterface
     {
-        $value = $this->string($key, $default);
-        if ($value === null) {
+        $datetime = $this->string($key, $default);
+        if ($datetime === null) {
             return $default;
         }
 
         try {
-            return new DateTime($value, new DateTimeZone($tz));
+            if ($format === null) {
+                return new DateTimeImmutable($datetime, $timezone);
+            }
+
+            return DateTimeImmutable::createFromFormat($format, $datetime, $timezone);
         } catch (Throwable) {
             return $default;
         }
