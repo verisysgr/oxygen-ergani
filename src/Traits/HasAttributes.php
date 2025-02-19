@@ -172,4 +172,14 @@ trait HasAttributes
             return null;
         }
     }
+
+    /**
+     * Returns the attributes of the model as an array.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->attributes;
+    }
 }
