@@ -20,7 +20,7 @@ class WorkCardTest extends TestCase
             ->setComments('test-comments')
             ->addDetails(
                 CardDetail::make()
-                    ->setTinNumber('888888888')
+                    ->setTin('888888888')
                     ->setFirstName('John')
                     ->setLastName('Doe')
                     ->setType(CardDetailType::CHECK_IN)
@@ -67,7 +67,7 @@ class WorkCardTest extends TestCase
             ->setComments('test-comments')
             ->addDetails([
                 CardDetail::make()
-                    ->setTinNumber('888888888')
+                    ->setTin('888888888')
                     ->setFirstName('John')
                     ->setLastName('Doe')
                     ->setReferenceDate('2025-02-21')
@@ -75,7 +75,7 @@ class WorkCardTest extends TestCase
                     ->setType(CardDetailType::CHECK_IN),
 
                 CardDetail::make()
-                    ->setTinNumber('777777777')
+                    ->setTin('777777777')
                     ->setFirstName('Jane')
                     ->setLastName('Doe')
                     ->setReferenceDate('2025-02-21')

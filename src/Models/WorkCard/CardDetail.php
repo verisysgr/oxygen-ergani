@@ -23,9 +23,9 @@ class CardDetail extends Model
         return $this->get('f_afm');
     }
 
-    public function setTinNumber(string $tinNumber): static
+    public function setTin(string $tin): static
     {
-        return $this->set('f_afm', $tinNumber);
+        return $this->set('f_afm', $tin);
     }
 
     public function getLastName(): ?string
