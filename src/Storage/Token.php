@@ -2,11 +2,13 @@
 
 namespace OxygenSuite\OxygenErgani\Storage;
 
+use OxygenSuite\OxygenErgani\Enums\Environment;
 use OxygenSuite\OxygenErgani\Exceptions\AuthenticationException;
 use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
 use OxygenSuite\OxygenErgani\Exceptions\RefreshTokenExpiredException;
 use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogin;
 use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationRefresh;
+use OxygenSuite\OxygenErgani\Http\Client;
 use OxygenSuite\OxygenErgani\Responses\AuthenticationToken;
 
 abstract class Token implements TokenManager
@@ -26,11 +28,13 @@ abstract class Token implements TokenManager
      * Sets the active token manager.
      *
      * @param  TokenManager|null  $tokenManager
+     * @param  Environment  $environment.
      * @return void
      */
-    public static function setCurrentTokenManager(?TokenManager $tokenManager): void
+    public static function setCurrentTokenManager(?TokenManager $tokenManager, Environment $environment = Environment::TEST): void
     {
         self::$currentTokenManager = $tokenManager;
+        Client::setDefaultEnvironment($environment);
     }
 
     /**

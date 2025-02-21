@@ -37,8 +37,8 @@ class FileTokenTest extends TestCase
         $fileToken->setAuthToken($token);
 
         $this->assertFileExists($fileToken->path());
-        $this->assertSame(md5('username-password'), $fileToken->getFilename());
-        $this->assertSame(md5('username-password'), $fileToken->generateFilename());
+        $this->assertSame(md5('username-password-TEST'), $fileToken->getFilename());
+        $this->assertSame(md5('username-password-TEST'), $fileToken->generateFilename());
 
         $cachedToken = json_decode(file_get_contents($fileToken->path()), true)['token'];
         $this->assertIsArray($cachedToken);

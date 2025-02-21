@@ -5,6 +5,7 @@ namespace OxygenSuite\OxygenErgani\Storage;
 use DateTime;
 use DateTimeImmutable;
 use Error;
+use OxygenSuite\OxygenErgani\Http\Client;
 use OxygenSuite\OxygenErgani\Responses\AuthenticationToken;
 
 class FileToken extends Token
@@ -69,7 +70,8 @@ class FileToken extends Token
 
     public function generateFilename(): string
     {
-        return md5($this->username.'-'.$this->password);
+        $env = Client::getDefaultEnvironment()?->name ?? '';
+        return md5($this->username.'-'.$this->password.'-'.$env);
     }
 
     public function saveToFile(): void

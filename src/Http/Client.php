@@ -16,6 +16,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class Client
 {
+    private static Environment $defaultEnvironment = Environment::TEST;
+
     private ?string $accessToken;
     private Environment $environment;
     private ClientConfig $config;
@@ -32,8 +34,18 @@ class Client
     public function __construct(?string $accessToken = null, ?Environment $environment = null, ?ClientConfig $config = null)
     {
         $this->accessToken = $accessToken;
-        $this->environment = $environment ?? Environment::TEST;
+        $this->environment = $environment ?? self::$defaultEnvironment;
         $this->config = $config ?? new ClientConfig();
+    }
+
+    public static function setDefaultEnvironment(Environment $environment): void
+    {
+        self::$defaultEnvironment = $environment;
+    }
+
+    public static function getDefaultEnvironment(): ?Environment
+    {
+        return self::$defaultEnvironment;
     }
 
     /**
