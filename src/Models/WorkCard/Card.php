@@ -38,7 +38,7 @@ class Card extends Model
         return $this->get('f_comments');
     }
 
-    public function setComments(string $comments): static
+    public function setComments(?string $comments): static
     {
         return $this->set('f_comments', $comments);
     }
