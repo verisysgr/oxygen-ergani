@@ -287,6 +287,12 @@ class Client
             throw new ConnectionException($message, $code);
         }
 
+        // Bad request
+        if ($code === 400) {
+            $bodyMessage = $this->extractMessageFromResponse() ?: $message;
+            throw new ErganiException($bodyMessage, $code);
+        }
+
         // Handle authentication issues
         if ($code === 401) {
             $this->handleAuthenticationError();
