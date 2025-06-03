@@ -13,18 +13,12 @@ class FileToken extends Token
     private string $filename;
     private ?AuthenticationToken $token = null;
 
-    public function __construct(string $username, string $password)
-    {
-        parent::__construct($username, $password);
-
-        if (!empty(trim($username)) && !empty(trim($password))) {
-            $this->filename = $this->generateFilename();
-            $this->readFromFile();
-        }
-    }
-
     public function getAccessToken(): ?string
     {
+        if (empty($this->token)) {
+            $this->readFromFile();
+        }
+
         return $this->token?->accessToken;
     }
 
@@ -76,10 +70,6 @@ class FileToken extends Token
 
     public function saveToFile(): void
     {
-        if (empty($this->filename)) {
-            return;
-        }
-
         if (!is_dir(self::dir())) {
             mkdir(self::dir());
         }
@@ -117,9 +107,8 @@ class FileToken extends Token
 
     public function deleteFile(): void
     {
-        $path = $this->path();
-        if (file_exists($path) && is_file($path)) {
-            unlink($path);
+        if ($this->fileExists()) {
+            unlink($this->path());
         }
     }
 
@@ -137,6 +126,10 @@ class FileToken extends Token
 
     public function path(): string
     {
+        if (empty($this->filename)) {
+            $this->filename = $this->generateFilename();
+        }
+
         return self::dir().'/'.$this->filename.'.json';
     }
 

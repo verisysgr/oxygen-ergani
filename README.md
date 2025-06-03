@@ -184,23 +184,23 @@ use OxygenSuite\OxygenErgani\Storage\Token;
 
 class DatabaseToken extends Token
 {
-    private ?Environment $environment;
     private ?AuthenticationToken $token = null;
 
-    public function __construct(string $username, string $password)
-    {
-        parent::__construct($username, $password);
-
-        $this->environment = Client::getDefaultEnvironment();
-
-        $this->loadTokenFromDatabase($username, $this->environment);
-    }
-
-    private function loadTokenFromDatabase(string $username): void
+    private function loadTokenFromDatabase(): void
     {
         // Implement your logic to retrieve the token from the database
 
+        $username = $this->username;
+        $password = $this->password;
+        $environment = Client::getDefaultEnvironment();
+
 //        $dbToken = ""; // Replace with the actual database retrieval logic
+
+        if (empty($dbToken)) {
+            // There isn't a token stored in the database for the current user
+            return;
+        }
+
         $this->token = new AuthenticationToken();
         $this->token->accessToken = $dbToken->accessToken;
         $this->token->accessTokenExpiresAt = $dbToken->accessTokenExpiresAt;
@@ -210,6 +210,10 @@ class DatabaseToken extends Token
 
     public function getAccessToken(): ?string
     {
+        if (empty($this->token)) {
+            $this->loadTokenFromDatabase();
+        }
+
         return $this->token?->accessToken;
     }
 
