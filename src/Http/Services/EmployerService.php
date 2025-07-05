@@ -6,7 +6,7 @@ use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
 use OxygenSuite\OxygenErgani\Models\Services\Employer;
 use OxygenSuite\OxygenErgani\Responses\EmployerResponse;
 
-class GetEmployer extends ExecuteService
+class EmployerService extends ExecuteService
 {
     protected function requestBody(): string
     {

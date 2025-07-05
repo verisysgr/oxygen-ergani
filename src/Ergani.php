@@ -8,7 +8,7 @@ use OxygenSuite\OxygenErgani\Exceptions\ErganiException;
 use OxygenSuite\OxygenErgani\Http\Auth\AuthenticationLogin;
 use OxygenSuite\OxygenErgani\Http\ClientConfig;
 use OxygenSuite\OxygenErgani\Http\Documents\WorkCard;
-use OxygenSuite\OxygenErgani\Http\Services\GetEmployer;
+use OxygenSuite\OxygenErgani\Http\Services\EmployerService;
 use OxygenSuite\OxygenErgani\Http\Services\ServicesList;
 use OxygenSuite\OxygenErgani\Models\Services\Employer;
 use OxygenSuite\OxygenErgani\Models\WorkCard\Card;
@@ -70,7 +70,7 @@ class Ergani
      */
     public function getEmployer(): Employer
     {
-        $getEmployer = new GetEmployer($this->accessToken, $this->environment, $this->config);
-        return $getEmployer->handle();
+        $employerService = new EmployerService($this->accessToken, $this->environment, $this->config);
+        return $employerService->handle();
     }
 }
