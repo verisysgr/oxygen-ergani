@@ -57,12 +57,11 @@ class EmployerServiceTest extends TestCase
         $method->setAccessible(true);
 
         $body = $method->invoke($employerService);
-        $decodedBody = json_decode($body, true);
 
-        $this->assertIsArray($decodedBody);
-        $this->assertArrayHasKey('ServiceCode', $decodedBody);
-        $this->assertArrayHasKey('Parameters', $decodedBody);
-        $this->assertSame('EX_BASE_01', $decodedBody['ServiceCode']);
-        $this->assertSame([], $decodedBody['Parameters']);
+        $this->assertIsArray($body);
+        $this->assertArrayHasKey('ServiceCode', $body);
+        $this->assertArrayHasKey('Parameters', $body);
+        $this->assertSame('EX_BASE_01', $body['ServiceCode']);
+        $this->assertSame([], $body['Parameters']);
     }
 }

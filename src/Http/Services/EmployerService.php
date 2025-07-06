@@ -8,14 +8,12 @@ use OxygenSuite\OxygenErgani\Responses\EmployerResponse;
 
 class EmployerService extends ExecuteService
 {
-    protected function requestBody(): string
+    protected function requestBody(): array
     {
-        $body = [
+        return [
             'ServiceCode' => 'EX_BASE_01',
             'Parameters' => [],
         ];
-
-        return json_encode($body);
     }
 
     /**

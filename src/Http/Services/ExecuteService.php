@@ -17,9 +17,8 @@ abstract class ExecuteService extends Client
      */
     protected function fetch(): static
     {
-        $this->asJson()->acceptJson();
         return $this->post(self::URI, $this->requestBody());
     }
 
-    abstract protected function requestBody(): string;
+    abstract protected function requestBody(): array;
 }
