@@ -10,6 +10,7 @@ class WTOEmployee extends Model
         'f_afm',
         'f_eponymo',
         'f_onoma',
+        'f_day',
         'f_date',
         'ErgazomenosAnalytics',
     ];
@@ -42,6 +43,16 @@ class WTOEmployee extends Model
     public function setFirstName(string $firstName): static
     {
         return $this->set('f_onoma', $firstName);
+    }
+
+    public function getDay(): ?int
+    {
+        return $this->get('f_day');
+    }
+
+    public function setDay(int $day): static
+    {
+        return $this->set('f_day', $day);
     }
 
     public function getDate(): ?string

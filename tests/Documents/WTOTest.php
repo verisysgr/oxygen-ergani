@@ -5,6 +5,7 @@
 namespace Tests\Documents;
 
 use OxygenSuite\OxygenErgani\Http\Documents\DailyWorkTime;
+use OxygenSuite\OxygenErgani\Http\Documents\WeeklyWorkTime;
 use OxygenSuite\OxygenErgani\Models\WTO\WTO;
 use OxygenSuite\OxygenErgani\Models\WTO\WTOAnalytics;
 use OxygenSuite\OxygenErgani\Models\WTO\WTOEmployee;
@@ -133,5 +134,148 @@ class WTOTest extends TestCase
         $this->assertSame('type', $card->getEmployee(1)->getAnalytic(0)->getType());
         $this->assertSame('09:00', $card->getEmployee(1)->getAnalytic(0)->getFromTime());
         $this->assertSame('17:00', $card->getEmployee(1)->getAnalytic(0)->getToTime());
+    }
+
+    public function test_weekly_work_time_submit(): void
+    {
+        $card = WTO::make()
+            ->setBranchCode('01')
+            ->setRelatedProtocol("ΕΣΠ27")
+            ->setRelatedDate("21/02/2025")
+            ->setComments('weekly-comments')
+            ->setFromDate("24/02/2025")
+            ->setToDate("28/02/2025")
+            ->addEmployee(
+                WTOEmployee::make()
+                    ->setTin('888888888')
+                    ->setFirstName('John')
+                    ->setLastName('Doe')
+                    ->setDay(1)
+                    ->addAnalytics(
+                        WTOAnalytics::make()
+                            ->setType('type')
+                            ->setFromTime('09:00')
+                            ->setToTime('17:00')
+                    )
+            );
+
+        $wto = new WeeklyWorkTime('test-access-token');
+        $wto->getConfig()->setHandler($this->mockResponse(200, 'work-card.json'));
+        $wto->handle($card);
+
+        $this->assertTrue($wto->isSuccessful());
+    }
+
+    public function test_weekly_work_time_schema(): void
+    {
+        $workCard = new WeeklyWorkTime("test-access-token");
+        $workCard->getConfig()->setHandler($this->mockResponse(200, 'wto-schema.json'));
+        $workCard->schema();
+
+        $this->assertTrue($workCard->isSuccessful());
+    }
+
+    public function test_weekly_work_time_pdf(): void
+    {
+        $workCard = new WeeklyWorkTime("test-access-token");
+        $workCard->getConfig()->setHandler($this->mockResponse(200, 'pdf.txt'));
+        $workCard->pdf("ΕΥΣ92", 19800410);
+
+        $this->assertTrue($workCard->isSuccessful());
+    }
+
+    public function test_employee_day_field(): void
+    {
+        $employee = WTOEmployee::make()
+            ->setTin('888888888')
+            ->setFirstName('John')
+            ->setLastName('Doe')
+            ->setDay(3)
+            ->addAnalytics(
+                WTOAnalytics::make()
+                    ->setType('type')
+                    ->setFromTime('09:00')
+                    ->setToTime('17:00')
+            );
+
+        $this->assertSame(3, $employee->getDay());
+        $this->assertSame('888888888', $employee->getTin());
+        $this->assertSame('John', $employee->getFirstName());
+        $this->assertSame('Doe', $employee->getLastName());
+    }
+
+    public function test_employee_day_field_in_sorted_array(): void
+    {
+        $employee = WTOEmployee::make()
+            ->setTin('888888888')
+            ->setFirstName('John')
+            ->setLastName('Doe')
+            ->setDay(5)
+            ->addAnalytics(
+                WTOAnalytics::make()
+                    ->setType('type')
+                    ->setFromTime('09:00')
+                    ->setToTime('17:00')
+            );
+
+        $array = $employee->toSortedArray();
+
+        $this->assertArrayHasKey('f_day', $array);
+        $this->assertSame(5, $array['f_day']);
+
+        $keys = array_keys($array);
+        $this->assertSame(['f_afm', 'f_eponymo', 'f_onoma', 'f_day', 'ErgazomenosAnalytics'], $keys);
+    }
+
+    public function test_weekly_model_with_multiple_days(): void
+    {
+        $card = WTO::make()
+            ->setBranchCode('01')
+            ->setFromDate("24/02/2025")
+            ->setToDate("28/02/2025")
+            ->addEmployee(
+                WTOEmployee::make()
+                    ->setTin('888888888')
+                    ->setFirstName('John')
+                    ->setLastName('Doe')
+                    ->setDay(1)
+                    ->addAnalytics(
+                        WTOAnalytics::make()
+                            ->setType('type')
+                            ->setFromTime('09:00')
+                            ->setToTime('17:00')
+                    )
+            )
+            ->addEmployee(
+                WTOEmployee::make()
+                    ->setTin('888888888')
+                    ->setFirstName('John')
+                    ->setLastName('Doe')
+                    ->setDay(2)
+                    ->addAnalytics(
+                        WTOAnalytics::make()
+                            ->setType('type')
+                            ->setFromTime('09:00')
+                            ->setToTime('17:00')
+                    )
+            )
+            ->addEmployee(
+                WTOEmployee::make()
+                    ->setTin('888888888')
+                    ->setFirstName('John')
+                    ->setLastName('Doe')
+                    ->setDay(3)
+                    ->addAnalytics(
+                        WTOAnalytics::make()
+                            ->setType('type')
+                            ->setFromTime('09:00')
+                            ->setToTime('17:00')
+                    )
+            );
+
+        $this->assertCount(3, $card->getEmployees());
+        $this->assertSame(1, $card->getEmployee(0)->getDay());
+        $this->assertSame(2, $card->getEmployee(1)->getDay());
+        $this->assertSame(3, $card->getEmployee(2)->getDay());
     }
 }
