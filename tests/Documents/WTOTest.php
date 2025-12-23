@@ -5,6 +5,7 @@
 namespace Tests\Documents;
 
 use OxygenSuite\OxygenErgani\Http\Documents\DailyWorkTime;
+use OxygenSuite\OxygenErgani\Http\Documents\HolidayWorkTime;
 use OxygenSuite\OxygenErgani\Http\Documents\WeeklyWorkTime;
 use OxygenSuite\OxygenErgani\Models\WTO\WTO;
 use OxygenSuite\OxygenErgani\Models\WTO\WTOAnalytics;
@@ -277,5 +278,75 @@ class WTOTest extends TestCase
         $this->assertSame(1, $card->getEmployee(0)->getDay());
         $this->assertSame(2, $card->getEmployee(1)->getDay());
         $this->assertSame(3, $card->getEmployee(2)->getDay());
+    }
+
+    public function test_holiday_work_time_submit(): void
+    {
+        $card = WTO::make()
+            ->setBranchCode('0')
+            ->setComments('holiday leave')
+            ->addEmployee(
+                WTOEmployee::make()
+                    ->setTin('999999999')
+                    ->setFirstName('ΤΕΣΤ')
+                    ->setLastName('ΤΕΣΤ')
+                    ->setDate('24/04/2022')
+                    ->addAnalytics(
+                        WTOAnalytics::make()
+                            ->setType('ΑΔ.ΚΑΝ')
+                            ->setFromTime('')
+                            ->setToTime('')
+                    )
+            );
+
+        $wto = new HolidayWorkTime('test-access-token');
+        $wto->getConfig()->setHandler($this->mockResponse(200, 'work-card.json'));
+        $wto->handle($card);
+
+        $this->assertTrue($wto->isSuccessful());
+    }
+
+    public function test_holiday_work_time_schema(): void
+    {
+        $workCard = new HolidayWorkTime("test-access-token");
+        $workCard->getConfig()->setHandler($this->mockResponse(200, 'wto-schema.json'));
+        $workCard->schema();
+
+        $this->assertTrue($workCard->isSuccessful());
+    }
+
+    public function test_holiday_work_time_pdf(): void
+    {
+        $workCard = new HolidayWorkTime("test-access-token");
+        $workCard->getConfig()->setHandler($this->mockResponse(200, 'pdf.txt'));
+        $workCard->pdf("ΕΥΣ92", 19800410);
+
+        $this->assertTrue($workCard->isSuccessful());
+    }
+
+    public function test_holiday_work_time_with_hourly_leave(): void
+    {
+        $card = WTO::make()
+            ->setBranchCode('0')
+            ->setComments('hourly leave')
+            ->addEmployee(
+                WTOEmployee::make()
+                    ->setTin('999999999')
+                    ->setFirstName('ΤΕΣΤ')
+                    ->setLastName('ΤΕΣΤ')
+                    ->setDate('24/04/2022')
+                    ->addAnalytics(
+                        WTOAnalytics::make()
+                            ->setType('ΩΑ.ΦΠ')
+                            ->setFromTime('09:00')
+                            ->setToTime('12:00')
+                    )
+            );
+
+        $wto = new HolidayWorkTime('test-access-token');
+        $wto->getConfig()->setHandler($this->mockResponse(200, 'work-card.json'));
+        $wto->handle($card);
+
+        $this->assertTrue($wto->isSuccessful());
     }
 }
