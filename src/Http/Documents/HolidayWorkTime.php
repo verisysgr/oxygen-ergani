@@ -8,7 +8,7 @@ use OxygenSuite\OxygenErgani\Responses\WTOResponse;
 
 class HolidayWorkTime extends Documents
 {
-    private const ACTION = 'WTOHoliday';
+    private const ACTION = 'WTOLeave';
 
     /**
      * @throws ErganiException
