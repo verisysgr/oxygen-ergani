@@ -89,6 +89,21 @@ $card = new Card();
 $workCard->handle($card);
 ```
 
+#### Custom API Hosts
+
+By default, the package uses the official Ergani API hosts. If you need to use custom hosts (e.g., for proxying or local development), you can set the following environment variables:
+
+| Environment Variable | Default Value | Description |
+|---------------------|---------------|-------------|
+| `ERGANI_PRODUCTION_HOST` | `eservices.yeka.gr` | Host for production environment |
+| `ERGANI_TEST_HOST` | `trialeservices.yeka.gr` | Host for test environment |
+
+Example:
+```bash
+export ERGANI_PRODUCTION_HOST=custom-production.example.com
+export ERGANI_TEST_HOST=custom-test.example.com
+```
+
 ### Token Management
 Ergani requires you to manage your tokens effectively. This means you should:
 - store your access token and refresh token,
