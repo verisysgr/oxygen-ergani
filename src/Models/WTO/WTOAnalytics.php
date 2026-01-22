@@ -10,6 +10,8 @@ class WTOAnalytics extends Model
         "f_type",
         "f_from",
         "f_to",
+        "f_year",
+        "f_req_days",
     ];
 
     public function getType(): ?string
@@ -40,5 +42,25 @@ class WTOAnalytics extends Model
     public function setToTime(string $toDate): static
     {
         return $this->set('f_to', $toDate);
+    }
+
+    public function getYear(): ?string
+    {
+        return $this->get('f_year');
+    }
+
+    public function setYear(string $year): static
+    {
+        return $this->set('f_year', $year);
+    }
+
+    public function getEntitledDays(): ?string
+    {
+        return $this->get('f_req_days');
+    }
+
+    public function setEntitledDays(string $days): static
+    {
+        return $this->set('f_req_days', str_pad($days, 3, '0', STR_PAD_LEFT));
     }
 }
